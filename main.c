@@ -49,8 +49,7 @@ int inverso_modular(mpz_t r, mpz_t a, mpz_t n)
 
 
 
-void mdc(mpz_t g,
-                             mpz_t a,  mpz_t b)
+void mdc(mpz_t g, mpz_t a,  mpz_t b)
 {
     mpz_t q, r;
     mpz_inits(q, r, NULL);
