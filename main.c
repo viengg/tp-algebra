@@ -59,12 +59,8 @@ void mdc(mpz_t g,
     while(mpz_cmp_ui(b, 0) != 0)
     {
         mpz_tdiv_r(r, a, b);
-        gmp_printf("resto: %Zd\n", r);
         mpz_set(a, b);
-        gmp_printf("a = %Zd\n", a);
         mpz_set(b, r);
-        gmp_printf("b = %Zd\n", b);
-
     }
     mpz_set(g, a);
 }
@@ -75,6 +71,8 @@ void main()
     mpz_t a, b, x, y, g, r;
     mpz_inits(a, b, g, x, y, r, NULL);
     gmp_scanf("%Zd %Zd", a, b);
+    mdc(g, a, b);
+    gmp_printf("mdc = %Zd\n", g);
     if(inverso_modular(r, a, b))
     {
         gmp_printf("inverso modular = %Zd\n", r);
