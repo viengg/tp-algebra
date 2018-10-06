@@ -1,8 +1,6 @@
 #include <gmp.h>
 #include <stdio.h>
 
-
-
 void mdc_estendido(mpz_t g, mpz_t x, mpz_t y, const mpz_t a, const mpz_t b)
 {
     mpz_t x1, y1, u ,v, q, r, m, n, aux1, aux2, a1, b1;
@@ -33,6 +31,8 @@ void mdc_estendido(mpz_t g, mpz_t x, mpz_t y, const mpz_t a, const mpz_t b)
     mpz_set(g, b1);
     mpz_set(x, x1);
     mpz_set(y, y1);
+
+    mpz_clears(x1, y1, u, v, q, r, m, n, aux1, aux2, a1, b1, NULL);
 }
 
 int inverso_modular(mpz_t r, const mpz_t a, const mpz_t n)
@@ -47,6 +47,8 @@ int inverso_modular(mpz_t r, const mpz_t a, const mpz_t n)
         return 1;
     }
     return 0;
+
+    mpz_clears(g, x, y, NULL);
 }
 
 
@@ -66,6 +68,8 @@ void mdc(mpz_t g, const mpz_t a, const mpz_t b)
         mpz_set(b1, r);
     }
     mpz_set(g, a1);
+
+    mpz_clears(q, r, a1, b1, NULL);
 }
 
 
@@ -83,5 +87,10 @@ void main()
 
     }
     else
+    {
         gmp_printf("Nao existe inverso modular\n");
+    }
+
+    mpz_clears(a, b, x, y, g, r, NULL);
+    
 }
