@@ -51,6 +51,32 @@ int inverso_modular(mpz_t r, const mpz_t a, const mpz_t n)
     mpz_clears(g, x, y, NULL);
 }
 
+void exp_binaria(mpz_t r, const mpz_t b, const mpz_t e, const mpz_t n)
+{
+    mpz_t result, x, y;
+    mpz_inits(result, x, y, NULL);
+    mpz_set_ui(result, 1);
+    mpz_set(x, b);
+    mpz_set(y, e);
+
+    mpz_tdiv_r(x, x, n);
+
+    while(mpz_cmp_ui(y, 0) > 0)
+    {
+        if(mpz_odd_p(y))
+        {
+            mpz_mul(result, result, x);
+            mpz_tdiv_r(result, result, n);
+        }
+        
+        mpz_tdiv_q_ui(y, y, 2);
+        mpz_mul(x, x, x);
+        mpz_tdiv_r(x, x, n);
+    }
+
+    mpz_set(r, result);
+
+}
 
 
 void mdc(mpz_t g, const mpz_t a, const mpz_t b)
@@ -61,7 +87,7 @@ void mdc(mpz_t g, const mpz_t a, const mpz_t b)
     mpz_set(b1, b);
     
 
-    while(mpz_cmp_ui(b1, 0) != 0)
+    while(mpz_cmp_ui(b1, 0) > 0)
     {
         mpz_tdiv_r(r, a1, b1);
         mpz_set(a1, b1);
@@ -75,22 +101,16 @@ void mdc(mpz_t g, const mpz_t a, const mpz_t b)
 
 void main()
 {
-    mpz_t a, b, x, y, g, r;
-    mpz_inits(a, b, g, x, y, r, NULL);
-    gmp_scanf("%Zd %Zd", a, b);
-    mdc_estendido(g, x, y, a, b);
-    gmp_printf("(%Zd)*(%Zd) + (%Zd)*(%Zd) = mdc(%Zd,%Zd) = %Zd\n",
-                                                     x, a, y, b, a, b, g);
-    if(inverso_modular(r, a, b))
-    {
-        gmp_printf("Inverso modular = %Zd\n", r);
-
-    }
-    else
-    {
-        gmp_printf("Nao existe inverso modular\n");
-    }
-
-    mpz_clears(a, b, x, y, g, r, NULL);
+    mpz_t b, e, n, r;
+    mpz_inits(b, e, n, r, NULL);
     
+    gmp_scanf("%Zd%Zd%Zd", b, e, n);
+    exp_binaria(r, b, e, n);
+
+    gmp_printf("Minha funcao: %Zd\n", r);
+
+    mpz_powm(r, b, e, n);
+
+    gmp_printf("mpz_powm: %Zd\n", r);
+
 }
