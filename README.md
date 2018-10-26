@@ -8,7 +8,7 @@ mdc_estendido = extended_gcd
   (returns a x, y and g, such that xa + yb = g = gcd(a, b).)
   
 inverso_modular = modular_inverse
-  (returns 1 if the modular_inverse exists and set it to r, or 0 if it doesn't.)
+  (returns 1 if the modular inverse exists and set it to r, or 0 if it doesn't.)
 
 exp_binaria = binary_exp
   (uses binary exponentiation to calculate b^e mod(n).)
