@@ -5,7 +5,7 @@ Implementation of extended gcd algorithm and modular inverse calculator using th
 The functions are named in portuguese, so i'll translate them here and give them a description of what they do:
 
 mdc_estendido = extended_gcd
-  returns a x, y and g, such that x*a + y*b = g = gcd(a, b).
+  returns a x, y and g, such that xa + yb = g = gcd(a, b).
   
 inverso_modular = modular_inverse
   returns 1 if the modular_inverse exists and set it to r, or 0 if it doesn't.
