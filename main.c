@@ -44,11 +44,11 @@ int inverso_modular(mpz_t r, const mpz_t a, const mpz_t n)
     if(mpz_cmp_ui(g, 1) == 0)
     {
         mpz_set(r, x);
+        mpz_clears(g, x, y, NULL);
         return 1;
     }
-    return 0;
-
     mpz_clears(g, x, y, NULL);
+    return 0;
 }
 
 void exp_binaria(mpz_t r, const mpz_t b, const mpz_t e, const mpz_t n)
@@ -75,6 +75,7 @@ void exp_binaria(mpz_t r, const mpz_t b, const mpz_t e, const mpz_t n)
     }
 
     mpz_set(r, result);
+    mpz_clears(result, x, y, NULL);
 
 }
 
@@ -86,25 +87,19 @@ int talvez_primo(const mpz_t a, const mpz_t n, const mpz_t n1,
     mpz_inits(x, a_aux, NULL);
     mpz_mod(a_aux, a, n);
     exp_binaria(x, a_aux, q, n);
-    gmp_printf("%Zd elevado a %Zd mod %Zd = %Zd\n", a, q, n, x);
 
     if(mpz_cmp_ui(x, 1) == 0 || mpz_cmp(x, n1) == 0)
     {
-        gmp_printf("fora do loop\n");
         return 1;
     }
 
     for(int i = 1; i < t; i++)
     {
-        gmp_printf("%Zd", x);
         mpz_mul(x, x, x);
         mpz_mod(x, x, n);
-        gmp_printf(" elevado a 2 mod %Zd = %Zd\n", n, x);
-
 
         if(mpz_cmp(x, n1) == 0)
         {
-            gmp_printf("dentro do loop\n");
             return 1;
         }
         else if(mpz_cmp_ui(x, 1) == 0)
@@ -113,23 +108,63 @@ int talvez_primo(const mpz_t a, const mpz_t n, const mpz_t n1,
         }
     }
 
-    printf("verificacao final\n");
+    mpz_clears(x, a_aux, NULL);
     return 0;
 
 }
 
+void numero_aleatorio(mpz_t r, const mpz_t n, gmp_randstate_t rnd)
+{
+    mp_bitcnt_t num_bits = mpz_sizeinbase(n, 2);
+    do
+    {
+        mpz_urandomb(r, rnd, num_bits);
+    } while (!(mpz_cmp_ui(r, 2) >= 0 && mpz_cmp(r, n) <= 0));
+}
+
+int provavelmente_primo(const mpz_t n, unsigned int iter, 
+                                        gmp_randstate_t rnd)
+{
+    mpz_t n1, q, a;
+    int t = 0;
+    mpz_inits(n1, q, a, NULL);
+    mpz_sub_ui(n1, n, 1);
+    mpz_set(q, n1);
+
+    while(mpz_even_p(q))
+    {
+        t++;
+        mpz_div_ui(q, q, 2);
+    }
+
+    for(int i = 0; i < iter; i++)
+    {
+        numero_aleatorio(a, n1, rnd);
+        if(!talvez_primo(a, n, n1, t, q))
+        {
+            return 0;
+        }
+    }
+    mpz_clears(n1, q, a, NULL);
+    return 1;
+}
+
+void primo_aleatorio(mpz_t r, unsigned int b, gmp_randstate_t rnd)
+{
+    do
+    {
+        mpz_urandomb(r, rnd, b);
+    }while(!provavelmente_primo(r, 20, rnd));
+}
 
 void main()
 {
-    mpz_t a, n, n1, q;
-    int t = 2;
-    mpz_inits(a, n, n1, q, NULL);
-    mpz_set_ui(a, 682);
-    mpz_set_ui(n, 341);
-    mpz_set_ui(n1, 340);
-    mpz_set_ui(q, 85);
+    gmp_randstate_t rnd;
+    gmp_randinit_default(rnd);
+    gmp_randseed_ui(rnd, 13);
 
-    int e_primo = talvez_primo(a, n, n1, t, q);
-
-    gmp_printf("%d\n", e_primo);
+    mpz_t n;
+    mpz_init(n);
+    primo_aleatorio(n, 24, rnd);
+    gmp_printf("%Zd\n", n);
 }
