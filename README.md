@@ -20,7 +20,7 @@ numero_aleatorio = random_number
   (generates a random number r, such that 2 <= r < n)
 
 provavelmente_primo = probably_prime
-  (uses the miller-rabin primality test to return 1 if n is prime with the odds of being wrong equal to 4^(-iter), or 0 if it's composite.)
+  (uses the miller-rabin primality test to return 1 if n is prime with a probability at most 4^(-iter), or 0 if it's composite.)
 
 primo_aleatorio = random_prime
   (returns a random prime n, such that 2 <= n < 2^b.)
