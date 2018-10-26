@@ -2,7 +2,7 @@
 
 Implementation of extended gcd algorithm and modular inverse calculator using the GMP library for the C language.
 
-The functions are named in portuguese, so i'll translate them here and a description of what they do:
+The functions are named in portuguese, so i'll translate them here and give them a description of what they do:
 
 mdc_estendido = extended_gcd
   returns a x, y and g, such that x*a + y*b = g = gcd(a, b).
