@@ -79,38 +79,57 @@ void exp_binaria(mpz_t r, const mpz_t b, const mpz_t e, const mpz_t n)
 }
 
 
-void mdc(mpz_t g, const mpz_t a, const mpz_t b)
+int talvez_primo(const mpz_t a, const mpz_t n, const mpz_t n1, 
+                                unsigned int t, const mpz_t q)
 {
-    mpz_t q, r, a1, b1;
-    mpz_inits(q, r, NULL);
-    mpz_set(a1, a);
-    mpz_set(b1, b);
-    
+    mpz_t x, a_aux;
+    mpz_inits(x, a_aux, NULL);
+    mpz_mod(a_aux, a, n);
+    exp_binaria(x, a_aux, q, n);
+    gmp_printf("%Zd elevado a %Zd mod %Zd = %Zd\n", a, q, n, x);
 
-    while(mpz_cmp_ui(b1, 0) > 0)
+    if(mpz_cmp_ui(x, 1) == 0 || mpz_cmp(x, n1) == 0)
     {
-        mpz_tdiv_r(r, a1, b1);
-        mpz_set(a1, b1);
-        mpz_set(b1, r);
+        gmp_printf("fora do loop\n");
+        return 1;
     }
-    mpz_set(g, a1);
 
-    mpz_clears(q, r, a1, b1, NULL);
+    for(int i = 1; i < t; i++)
+    {
+        gmp_printf("%Zd", x);
+        mpz_mul(x, x, x);
+        mpz_mod(x, x, n);
+        gmp_printf(" elevado a 2 mod %Zd = %Zd\n", n, x);
+
+
+        if(mpz_cmp(x, n1) == 0)
+        {
+            gmp_printf("dentro do loop\n");
+            return 1;
+        }
+        else if(mpz_cmp_ui(x, 1) == 0)
+        {
+            return 0;
+        }
+    }
+
+    printf("verificacao final\n");
+    return 0;
+
 }
 
 
 void main()
 {
-    mpz_t b, e, n, r;
-    mpz_inits(b, e, n, r, NULL);
-    
-    gmp_scanf("%Zd%Zd%Zd", b, e, n);
-    exp_binaria(r, b, e, n);
+    mpz_t a, n, n1, q;
+    int t = 2;
+    mpz_inits(a, n, n1, q, NULL);
+    mpz_set_ui(a, 682);
+    mpz_set_ui(n, 341);
+    mpz_set_ui(n1, 340);
+    mpz_set_ui(q, 85);
 
-    gmp_printf("Minha funcao: %Zd\n", r);
+    int e_primo = talvez_primo(a, n, n1, t, q);
 
-    mpz_powm(r, b, e, n);
-
-    gmp_printf("mpz_powm: %Zd\n", r);
-
+    gmp_printf("%d\n", e_primo);
 }
