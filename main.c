@@ -90,6 +90,7 @@ int talvez_primo(const mpz_t a, const mpz_t n, const mpz_t n1,
 
     if(mpz_cmp_ui(x, 1) == 0 || mpz_cmp(x, n1) == 0)
     {
+        mpz_clears(x, a_aux, NULL);
         return 1;
     }
 
@@ -100,10 +101,12 @@ int talvez_primo(const mpz_t a, const mpz_t n, const mpz_t n1,
 
         if(mpz_cmp(x, n1) == 0)
         {
+            mpz_clears(x, a_aux, NULL);
             return 1;
         }
         else if(mpz_cmp_ui(x, 1) == 0)
         {
+            mpz_clears(x, a_aux, NULL);
             return 0;
         }
     }
@@ -131,6 +134,12 @@ int provavelmente_primo(const mpz_t n, unsigned int iter,
     mpz_sub_ui(n1, n, 1);
     mpz_set(q, n1);
 
+    if(mpz_even_p(n))
+    {
+        mpz_clears(n1, q, a, NULL);
+        return 0;
+    }
+
     while(mpz_even_p(q))
     {
         t++;
@@ -142,6 +151,7 @@ int provavelmente_primo(const mpz_t n, unsigned int iter,
         numero_aleatorio(a, n1, rnd);
         if(!talvez_primo(a, n, n1, t, q))
         {
+            mpz_clears(n1, q, a, NULL);
             return 0;
         }
     }
@@ -161,10 +171,10 @@ void main()
 {
     gmp_randstate_t rnd;
     gmp_randinit_default(rnd);
-    gmp_randseed_ui(rnd, 13);
+    gmp_randseed_ui(rnd, 116767);
 
-    mpz_t n;
-    mpz_init(n);
-    primo_aleatorio(n, 24, rnd);
-    gmp_printf("%Zd\n", n);
+    mpz_t p;
+    mpz_init(p);
+    primo_aleatorio(p, 2048, rnd);
+    gmp_printf("%Zd\n", p);
 }
