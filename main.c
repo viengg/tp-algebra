@@ -134,6 +134,12 @@ int provavelmente_primo(const mpz_t n, unsigned int iter,
     mpz_sub_ui(n1, n, 1);
     mpz_set(q, n1);
 
+    if(mpz_cmp_ui(n, 2) == 0)
+    {
+        mpz_clears(n1, q, a, NULL);
+        return 1;
+    }
+
     if(mpz_even_p(n))
     {
         mpz_clears(n1, q, a, NULL);
@@ -175,6 +181,6 @@ void main()
 
     mpz_t p;
     mpz_init(p);
-    primo_aleatorio(p, 2048, rnd);
-    gmp_printf("%Zd\n", p);
+    mpz_set_ui(p, 4);
+    printf("%d\n", provavelmente_primo(p, 20, rnd));
 }
