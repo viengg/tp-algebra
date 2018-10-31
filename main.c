@@ -86,6 +86,13 @@ int talvez_primo(const mpz_t a, const mpz_t n, const mpz_t n1,
     mpz_t x, a_aux;
     mpz_inits(x, a_aux, NULL);
     mpz_mod(a_aux, a, n);
+
+    if(mpz_cmp_ui(a_aux, 0) == 0)
+    {
+        mpz_clears(x, a_aux, NULL);
+        return 1;   
+    }
+
     exp_binaria(x, a_aux, q, n);
 
     if(mpz_cmp_ui(x, 1) == 0 || mpz_cmp(x, n1) == 0)
@@ -173,14 +180,38 @@ void primo_aleatorio(mpz_t r, unsigned int b, gmp_randstate_t rnd)
     }while(!provavelmente_primo(r, 20, rnd));
 }
 
+void gera_chaves(mpz_t n, mpz_t e, mpz_t d, gmp_randstate_t rnd)
+{
+    mpz_t p, q, p1, q1, phi, g;
+    mpz_inits(p, q, p1, q1, phi, g, NULL);
+    mpz_set_ui(e, 65536);
+    primo_aleatorio(p, 20, rnd);
+    primo_aleatorio(q, 20, rnd);
+    mpz_mul(n, p, q);
+    gmp_printf("%Zd = %Zd * %Zd\n", n, p, q);
+    mpz_sub_ui(p1, p, 1);
+    mpz_sub_ui(q1, q, 1);
+    mpz_mul(phi, p1, q1);
+    
+    do
+    {
+        mpz_add_ui(e, e, 1);
+        mpz_gcd(g, e, phi);
+        gmp_printf("mdc = %Zd\n", g);
+    }while(mpz_cmp_ui(g, 1) != 0);
+
+    inverso_modular(d, e, phi);
+    mpz_clears(p, q, p1, q1, phi, g, NULL);
+}
+
 void main()
 {
     gmp_randstate_t rnd;
     gmp_randinit_default(rnd);
-    gmp_randseed_ui(rnd, 116767);
+    gmp_randseed_ui(rnd, 1114522567);
 
-    mpz_t p;
-    mpz_init(p);
-    mpz_set_ui(p, 4);
-    printf("%d\n", provavelmente_primo(p, 20, rnd));
+    mpz_t n, e, d;
+    mpz_inits(n, e ,d, NULL);
+    gera_chaves(n, e, d, rnd);
+    gmp_printf("n = %Zd\ne = %Zd\nd = %Zd\n", n, e, d);
 }
