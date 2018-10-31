@@ -191,7 +191,6 @@ void gera_chaves(mpz_t n, mpz_t e, mpz_t d, gmp_randstate_t rnd)
     primo_aleatorio(p, 20, rnd);
     primo_aleatorio(q, 20, rnd);
     mpz_mul(n, p, q);
-    //gmp_printf("%Zd = %Zd * %Zd\n", n, p, q);
     mpz_sub_ui(p1, p, 1);
     mpz_sub_ui(q1, q, 1);
     mpz_mul(phi, p1, q1);
@@ -250,7 +249,7 @@ void main()
     mpz_t n, e, d, r;
     mpz_inits(n, e ,d, r, NULL);
     gera_chaves(n, e, d, rnd);
-    codifica(r, "puta que pariu velho voce e muito retardado deus me livre e me guarde");
+    codifica(r, "is there anybody out there");
     gmp_printf("mensagem = %Zd\n", r);
     msg = decodifica(r);
     gmp_printf("mensagem decodificada = %s\n", msg);
