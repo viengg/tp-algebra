@@ -1,5 +1,6 @@
 #include <gmp.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 #include <math.h>
 
@@ -208,20 +209,40 @@ void gera_chaves(mpz_t n, mpz_t e, mpz_t d, gmp_randstate_t rnd)
 
 void codifica(mpz_t r, const char *str)
 {
-    int aux = 0;
-    for(int i = 0; i < (strlen(str)-1); i++)
+    mpz_t aux, pot;
+    mpz_inits(aux, pot, NULL);
+
+    for(int i = 0; i < strlen(str); i++)
     {
-        aux = str[i] * pow(256, i);
-        mpz_add_ui(r, r, aux);
+        mpz_ui_pow_ui(pot, 256, i);
+        mpz_mul_ui(aux, pot, str[i]);
+        mpz_add(r, r, aux);
     }
+
+    mpz_clears(aux, pot, NULL);
 }
 
 char *decodifica(const mpz_t n)
 {
-    char mensagem[500];
+    int i = 0;
+    char *mensagem = malloc(sizeof(char)*501);
+    mpz_t n_aux, r;
+    mpz_inits(n_aux, r, NULL);
+    mpz_set(n_aux, n);
+
+    while(mpz_cmp_ui(n_aux, 0) != 0)
+    {
+        mpz_tdiv_qr_ui(n_aux, r, n_aux, 256);
+        mensagem[i++] = mpz_get_ui(r);
+    }
+
+    mpz_clears(n_aux, r, NULL);
+    mensagem[i] = '\0';
+    return mensagem;
 }
 void main()
 {
+    char *msg;
     gmp_randstate_t rnd;
     gmp_randinit_default(rnd);
     gmp_randseed_ui(rnd, 1114522567);
@@ -229,6 +250,8 @@ void main()
     mpz_t n, e, d, r;
     mpz_inits(n, e ,d, r, NULL);
     gera_chaves(n, e, d, rnd);
-    codifica(r, "mensagem codificada");
+    codifica(r, "puta que pariu velho voce e muito retardado deus me livre e me guarde");
     gmp_printf("mensagem = %Zd\n", r);
+    msg = decodifica(r);
+    gmp_printf("mensagem decodificada = %s\n", msg);
 }
