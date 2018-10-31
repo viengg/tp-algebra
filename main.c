@@ -1,5 +1,7 @@
 #include <gmp.h>
 #include <stdio.h>
+#include <string.h>
+#include <math.h>
 
 void mdc_estendido(mpz_t g, mpz_t x, mpz_t y, const mpz_t a, const mpz_t b)
 {
@@ -188,7 +190,7 @@ void gera_chaves(mpz_t n, mpz_t e, mpz_t d, gmp_randstate_t rnd)
     primo_aleatorio(p, 20, rnd);
     primo_aleatorio(q, 20, rnd);
     mpz_mul(n, p, q);
-    gmp_printf("%Zd = %Zd * %Zd\n", n, p, q);
+    //gmp_printf("%Zd = %Zd * %Zd\n", n, p, q);
     mpz_sub_ui(p1, p, 1);
     mpz_sub_ui(q1, q, 1);
     mpz_mul(phi, p1, q1);
@@ -197,21 +199,36 @@ void gera_chaves(mpz_t n, mpz_t e, mpz_t d, gmp_randstate_t rnd)
     {
         mpz_add_ui(e, e, 1);
         mpz_gcd(g, e, phi);
-        gmp_printf("mdc = %Zd\n", g);
     }while(mpz_cmp_ui(g, 1) != 0);
 
     inverso_modular(d, e, phi);
+    mpz_mod(d, d, phi);
     mpz_clears(p, q, p1, q1, phi, g, NULL);
 }
 
+void codifica(mpz_t r, const char *str)
+{
+    int aux = 0;
+    for(int i = 0; i < (strlen(str)-1); i++)
+    {
+        aux = str[i] * pow(256, i);
+        mpz_add_ui(r, r, aux);
+    }
+}
+
+char *decodifica(const mpz_t n)
+{
+    char mensagem[500];
+}
 void main()
 {
     gmp_randstate_t rnd;
     gmp_randinit_default(rnd);
     gmp_randseed_ui(rnd, 1114522567);
 
-    mpz_t n, e, d;
-    mpz_inits(n, e ,d, NULL);
+    mpz_t n, e, d, r;
+    mpz_inits(n, e ,d, r, NULL);
     gera_chaves(n, e, d, rnd);
-    gmp_printf("n = %Zd\ne = %Zd\nd = %Zd\n", n, e, d);
+    codifica(r, "mensagem codificada");
+    gmp_printf("mensagem = %Zd\n", r);
 }
