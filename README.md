@@ -24,3 +24,18 @@ provavelmente_primo = probably_prime
 
 primo_aleatorio = random_prime
   (returns a random prime n, such that 2 <= n < 2^b.)
+  
+gera_chaves = generate_keys
+  (returns a random prime n, a public key e and a private key d.)
+
+codifica = codify
+  (converts a string to a base 256 number r.)
+
+decodifica = decodify
+  (converts a base 256 number to a string.)
+  
+criptografa = cryptograph
+  (returns a C such that C = M^e % n.)
+
+descriptografa = decryptograph
+  (returns a M such that M = C^d % n.)
