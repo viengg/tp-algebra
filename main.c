@@ -135,8 +135,7 @@ void numero_aleatorio(mpz_t r, const mpz_t n, gmp_randstate_t rnd)
     } while (!(mpz_cmp_ui(r, 2) >= 0 && mpz_cmp(r, n) <= 0));
 }
 
-int provavelmente_primo(const mpz_t n, unsigned int iter, 
-                                        gmp_randstate_t rnd)
+int provavelmente_primo(const mpz_t n, unsigned int iter, gmp_randstate_t rnd)
 {
     mpz_t n1, q, a;
     int t = 0;
@@ -188,8 +187,8 @@ void gera_chaves(mpz_t n, mpz_t e, mpz_t d, gmp_randstate_t rnd)
     mpz_t p, q, p1, q1, phi, g;
     mpz_inits(p, q, p1, q1, phi, g, NULL);
     mpz_set_ui(e, 65536);
-    primo_aleatorio(p, 20, rnd);
-    primo_aleatorio(q, 20, rnd);
+    primo_aleatorio(p, 1024, rnd);
+    primo_aleatorio(q, 1024, rnd);
     mpz_mul(n, p, q);
     mpz_sub_ui(p1, p, 1);
     mpz_sub_ui(q1, q, 1);
@@ -239,18 +238,41 @@ char *decodifica(const mpz_t n)
     mensagem[i] = '\0';
     return mensagem;
 }
+
+void criptografa(mpz_t C, const mpz_t M, const mpz_t n, const mpz_t e)
+{
+    exp_binaria(C, M, e, n);
+}
+
+void descriptografa(mpz_t M, const mpz_t C, const mpz_t n, const mpz_t d)
+{
+    exp_binaria(M, C, d, n);
+}
+
 void main()
 {
-    char *msg;
+    char msg[500];
     gmp_randstate_t rnd;
     gmp_randinit_default(rnd);
     gmp_randseed_ui(rnd, 1114522567);
 
-    mpz_t n, e, d, r;
-    mpz_inits(n, e ,d, r, NULL);
+    mpz_t n, e, d, mensagem, M, C;
+    mpz_inits(n, e ,d, mensagem, M, C, NULL);
+
+    printf("Digite uma mensagem: ");
+    scanf("%[^\n]%*c", msg);
+    codifica(mensagem, msg);
+    gmp_printf("mensagem = %Zd\n", mensagem);
+
     gera_chaves(n, e, d, rnd);
-    codifica(r, "is there anybody out there");
-    gmp_printf("mensagem = %Zd\n", r);
-    msg = decodifica(r);
-    gmp_printf("mensagem decodificada = %s\n", msg);
+ 
+    criptografa(C, mensagem, n, e);
+    gmp_printf("mensagem criptografada = %Zd\n", C);
+
+    descriptografa(M, C, n, d);
+    gmp_printf("mensagem descriptografada = %Zd\n", M);
+
+    printf("mensagem M decodificada = %s\n", decodifica(M));
+    mpz_clears(n, e ,d, mensagem, M, C, NULL);
+    
 }
