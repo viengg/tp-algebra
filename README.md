@@ -11,10 +11,10 @@ inverso_modular = modular_inverse
   (returns 1 if the modular inverse exists and sets it to r, or 0 if it doesn't.)
 
 exp_binaria = binary_exp
-  (uses binary exponentiation to calculate b^e mod(n).)
+  (uses binary exponentiation to calculate b^e % n.)
 
 talvez_primo = maybe_prime
-  (uses the miller primality test to return 1 if n is probably prime, or 0 if it's composite.)
+  (uses the miller primality test to return 1 if the test is inconclusive, or 0 if n is composite.)
 
 numero_aleatorio = random_number
   (generates a random number r, such that 2 <= r < n)
@@ -29,7 +29,7 @@ gera_chaves = generate_keys
   (returns a random prime n, a public key e and a private key d.)
 
 codifica = codify
-  (converts a string to a base 256 number r.)
+  (converts a string to a base 256 number.)
 
 decodifica = decodify
   (converts a base 256 number to a string.)
