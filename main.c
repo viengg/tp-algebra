@@ -186,7 +186,7 @@ void gera_chaves(mpz_t n, mpz_t e, mpz_t d, gmp_randstate_t rnd)
 {
     mpz_t p, q, p1, q1, phi, g;
     mpz_inits(p, q, p1, q1, phi, g, NULL);
-    mpz_set_ui(e, 65536);
+    mpz_set_ui(e, 65535);
     primo_aleatorio(p, 1024, rnd);
     primo_aleatorio(q, 1024, rnd);
     mpz_mul(n, p, q);
@@ -196,7 +196,7 @@ void gera_chaves(mpz_t n, mpz_t e, mpz_t d, gmp_randstate_t rnd)
     
     do
     {
-        mpz_add_ui(e, e, 1);
+        mpz_add_ui(e, e, 2);
         mpz_gcd(g, e, phi);
     }while(mpz_cmp_ui(g, 1) != 0);
 
