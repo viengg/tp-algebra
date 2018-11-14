@@ -16,7 +16,7 @@ void main()
     printf("Digite uma mensagem: ");
     scanf("%[^\n]%*c", msg);
     codifica(mensagem, msg);
-    gmp_printf("mensagem codificada = %Zd\n\n", mensagem);
+    gmp_printf("\nmensagem codificada = %Zd\n\n", mensagem);
 
     gera_chaves(n, e, d, rnd);
  
@@ -28,9 +28,9 @@ void main()
     free(msg);
 
     descriptografa(M, C, n, d);
-    gmp_printf("mensagem descriptografada = %Zd\n", M);
+    gmp_printf("mensagem descriptografada = %Zd\n\n", M);
 
-    printf("mensagem M decodificada = %s\n", decodifica(M));
+    printf("mensagem M decodificada = %s\n\n", decodifica(M));
     mpz_clears(n, e ,d, mensagem, M, C, NULL);
     
 }
